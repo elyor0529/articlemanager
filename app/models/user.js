@@ -7,14 +7,7 @@
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 
-const Schema = mongoose.Schema;
-const oAuthTypes = [
-  'github',
-  'twitter',
-  'facebook',
-  'google',
-  'linkedin'
-];
+const Schema = mongoose.Schema; 
 
 /**
  * User Schema
@@ -26,13 +19,7 @@ const UserSchema = new Schema({
   username: { type: String, default: '' },
   provider: { type: String, default: '' },
   hashed_password: { type: String, default: '' },
-  salt: { type: String, default: '' },
-  authToken: { type: String, default: '' },
-  facebook: {},
-  twitter: {},
-  github: {},
-  google: {},
-  linkedin: {}
+  salt: { type: String, default: '' }
 });
 
 const validatePresenceOf = value => value && value.length;
@@ -59,19 +46,16 @@ UserSchema
 // the below 5 validations only apply if you are signing up traditionally
 
 UserSchema.path('name').validate(function (name) {
-  if (this.skipValidation()) return true;
-  return name.length;
+   return name.length;
 }, 'Name cannot be blank');
 
 UserSchema.path('email').validate(function (email) {
-  if (this.skipValidation()) return true;
-  return email.length;
+   return email.length;
 }, 'Email cannot be blank');
 
 UserSchema.path('email').validate(function (email, fn) {
   const User = mongoose.model('User');
-  if (this.skipValidation()) fn(true);
-
+ 
   // Check only when it is a new user or when email field is modified
   if (this.isNew || this.isModified('email')) {
     User.find({ email: email }).exec(function (err, users) {
@@ -81,13 +65,11 @@ UserSchema.path('email').validate(function (email, fn) {
 }, 'Email already exists');
 
 UserSchema.path('username').validate(function (username) {
-  if (this.skipValidation()) return true;
-  return username.length;
+   return username.length;
 }, 'Username cannot be blank');
 
 UserSchema.path('hashed_password').validate(function (hashed_password) {
-  if (this.skipValidation()) return true;
-  return hashed_password.length && this._password.length;
+    return hashed_password.length && this._password.length;
 }, 'Password cannot be blank');
 
 
@@ -98,7 +80,7 @@ UserSchema.path('hashed_password').validate(function (hashed_password) {
 UserSchema.pre('save', function (next) {
   if (!this.isNew) return next();
 
-  if (!validatePresenceOf(this.password) && !this.skipValidation()) {
+  if (!validatePresenceOf(this.password)) {
     next(new Error('Invalid password'));
   } else {
     next();
@@ -153,14 +135,7 @@ UserSchema.methods = {
       return '';
     }
   },
-
-  /**
-   * Validation is not required if using OAuth
-   */
-
-  skipValidation: function () {
-    return ~oAuthTypes.indexOf(this.provider);
-  }
+ 
 };
 
 /**

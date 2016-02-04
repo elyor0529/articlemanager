@@ -24,5 +24,5 @@ if (fs.existsSync(envFile)) {
  */
 
 module.exports = {
-  db: 'mongodb://localhost/article_db'
+  db: 'mongodb://localhost/article_dev'
 };

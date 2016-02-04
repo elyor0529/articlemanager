@@ -6,11 +6,7 @@
 
 const mongoose = require('mongoose');
 const notify = require('../mailer');
-
-// const Imager = require('imager');
-// const config = require('../../config/config');
-// const imagerConfig = require(config.root + '/config/imager.js');
-
+ 
 const Schema = mongoose.Schema;
 
 const getTags = tags => tags.join(',');
@@ -29,11 +25,7 @@ const ArticleSchema = new Schema({
     user: { type : Schema.ObjectId, ref : 'User' },
     createdAt: { type : Date, default : Date.now }
   }],
-  tags: { type: [], get: getTags, set: setTags },
-  image: {
-    cdnUri: String,
-    files: []
-  },
+  tags: { type: [], get: getTags, set: setTags }, 
   createdAt  : { type : Date, default : Date.now }
 });
 
@@ -48,15 +40,7 @@ ArticleSchema.path('body').required(true, 'Article body cannot be blank');
  * Pre-remove hook
  */
 
-ArticleSchema.pre('remove', function (next) {
-  // const imager = new Imager(imagerConfig, 'S3');
-  // const files = this.image.files;
-
-  // if there are files associated with the item, remove from the cloud too
-  // imager.remove(files, function (err) {
-  //   if (err) return next(err);
-  // }, 'article');
-
+ArticleSchema.pre('remove', function (next) { 
   next();
 });
 
@@ -73,23 +57,10 @@ ArticleSchema.methods = {
    * @api private
    */
 
-  uploadAndSave: function (images) {
+  uploadAndSave: function () {
     const err = this.validateSync();
     if (err && err.toString()) throw new Error(err.toString());
-    return this.save();
-
-    /*
-    if (images && !images.length) return this.save();
-    const imager = new Imager(imagerConfig, 'S3');
-
-    imager.upload(images, function (err, cdnUri, files) {
-      if (err) return cb(err);
-      if (files.length) {
-        self.image = { cdnUri : cdnUri, files : files };
-      }
-      self.save(cb);
-    }, 'article');
-    */
+    return this.save(); 
   },
 
   /**

@@ -14,7 +14,7 @@ const production = require('./env/production');
 const notifier = {
   service: 'postmark',
   APN: false,
-  email: true, // true
+  email: true, 
   actions: ['comment'],
   tplPath: path.join(__dirname, '..', 'app/mailer/templates'),
   key: 'POSTMARK_KEY'

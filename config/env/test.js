@@ -5,5 +5,5 @@
  */
 
 module.exports = {
-  db: 'mongodb://localhost/article_db'
+  db: 'mongodb://localhost/article_test'
 };

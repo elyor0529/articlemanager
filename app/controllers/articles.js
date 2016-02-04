@@ -61,12 +61,9 @@ exports.new = function (req, res){
 
 exports.create = wrap(function* (req, res) {
   const article = new Article(only(req.body, 'title body tags'));
-  const images = req.files.image
-    ? [req.files.image]
-    : undefined;
-
+ 
   article.user = req.user;
-  yield article.uploadAndSave(images);
+  yield article.uploadAndSave();
   req.flash('success', 'Successfully created article!');
   res.redirect('/articles/' + article._id);
 });
@@ -87,13 +84,10 @@ exports.edit = function (req, res) {
  */
 
 exports.update = wrap(function* (req, res){
-  const article = req.article;
-  const images = req.files.image
-    ? [req.files.image]
-    : undefined;
+  const article = req.article; 
 
   assign(article, only(req.body, 'title body tags'));
-  yield article.uploadAndSave(images);
+  yield article.uploadAndSave();
   res.redirect('/articles/' + article._id);
 });
 
